@@ -5,7 +5,7 @@ import prisma from "@/utils/prisma"
 
 export const { GET, POST } = handlers
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { auth } = NextAuth({
   providers: [
     Google({
       authorization: {
