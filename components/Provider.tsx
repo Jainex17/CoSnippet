@@ -1,7 +1,6 @@
-
-
 import { SessionProvider } from "next-auth/react";
 import { NextUIProvider } from "@nextui-org/react";
+import { ContextProvider } from "@/utils/AppContext";
 
 export const Provider = ({
     children,
@@ -10,9 +9,11 @@ export const Provider = ({
   }>) => {
   return <>
     <NextUIProvider>
-        <SessionProvider>
+      <SessionProvider>
+        <ContextProvider>
             {children}
-        </SessionProvider>
+        </ContextProvider>
+      </SessionProvider>
     </NextUIProvider>
   </>;
 };
