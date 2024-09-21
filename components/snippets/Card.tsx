@@ -19,7 +19,7 @@ export const Card = ({ snippet }: CardProps) => {
     if (typeof Prism !== "undefined") {
       Prism.highlightAll();
     }
-  }, []);
+  }, [snippet.language]);
 
   return (
     <>

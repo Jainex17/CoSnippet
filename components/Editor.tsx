@@ -54,7 +54,7 @@ const Editor = ({ index }: { index: number }) => {
 
     const numLines = lines?.map((line) => calculateNumLines(line));
 
-    let lineNumbers: string[] = [];
+    const lineNumbers: string[] = [];
     let i = 1;
     numLines.forEach((numLinesOfSentence) => {
       lineNumbers.push(i.toString());
@@ -94,7 +94,7 @@ const Editor = ({ index }: { index: number }) => {
     return () => {
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [calculateLineNumbers]);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setLines(calculateLineNumbers());
