@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, Divider } from "@nextui-org/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Prism from "prismjs";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
 
@@ -20,6 +20,51 @@ export const Card = ({ snippet }: CardProps) => {
       Prism.highlightAll();
     }
   }, [snippet.language]);
+
+  const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisLiked, setIsDisLiked] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleLike = () => {
+    if (isProcessing) return; 
+    setIsProcessing(true); 
+    if (isLiked) {
+      setLikes(likes - 1); 
+    } else {
+      if (isDisLiked) {
+        setLikes(likes + 2); 
+      } else {
+        setLikes(likes + 1); 
+      }
+    }
+    setIsLiked(!isLiked);
+    setIsDisLiked(false);
+    setTimeout(() => setIsProcessing(false), 300); 
+  };
+
+  const handleDisLike = () => {
+    if (isProcessing) return; 
+    setIsProcessing(true); 
+    if (isDisLiked) {
+      setLikes(likes + 1); 
+    } else {
+      if (isLiked) {
+        setLikes(likes - 2); 
+      } else {
+        setLikes(likes - 1); 
+      }
+    }
+    setIsDisLiked(!isDisLiked);
+    setIsLiked(false);
+    setTimeout(() => setIsProcessing(false), 300); 
+  };
+
+   const backgroundColor = isLiked
+   ? 'bg-red-800'
+   : isDisLiked
+   ? 'bg-blue-800' 
+   : 'bg-[#201421]';
 
   return (
     <>
@@ -55,8 +100,11 @@ export const Card = ({ snippet }: CardProps) => {
         </div>
 
         <div className="flex gap-3">
-          <div className="bg-[#201421] rounded-full flex items-center gap-1">
-            <button className="hover:bg-[#333D42] hover:text-red-600 p-2 rounded-full">
+          <div className={`${backgroundColor} rounded-full flex items-center gap-1 `}>
+            <button 
+              className="hover:bg-[#333D42] hover:text-red-600 p-2 rounded-full"
+              onClick={handleLike}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5"
@@ -68,8 +116,11 @@ export const Card = ({ snippet }: CardProps) => {
                 ></path>
               </svg>
             </button>
-            <span className="text-sm">20</span>
-            <button className="hover:bg-[#333D42] hover:text-blue-600 p-2 rounded-full">
+            <span className="text-sm">{likes}</span>
+            <button 
+              className="hover:bg-[#333D42] hover:text-blue-600 p-2 rounded-full"
+              onClick={handleDisLike}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5"

@@ -3,11 +3,10 @@
 import { Tooltip } from "@nextui-org/react";
 import Editor from "./Editor";
 import { useAppContext } from "@/utils/AppContext";
-import { useEffect } from "react";
 
 export const IDE = ({ index }: { index: number }) => {
   
-  const { snippet, files, setFiles } = useAppContext();
+  const { files, setFiles } = useAppContext();
   const findindex = files.findIndex((file) => file.id === index);
 
   const handleFileTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,11 +20,6 @@ export const IDE = ({ index }: { index: number }) => {
   const handleDeleteFile = (id: number) => {
     setFiles(files.filter((f) => f.id !== id));
   }
-
-  useEffect(() => {
-  console.log(snippet);
-  }, [snippet]);
-  
 
   return (
     <>
