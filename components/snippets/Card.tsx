@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, Divider } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Prism from "prismjs";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
 
@@ -16,7 +16,7 @@ export const Card = ({ snippet }: CardProps) => {
   useEffect(() => {
     loadPrismLanguage(snippet.language);
 
-    if (typeof window !== "undefined") {
+    if (typeof Prism !== "undefined") {
       Prism.highlightAll();
     }
   }, []);

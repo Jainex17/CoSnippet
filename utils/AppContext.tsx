@@ -9,8 +9,23 @@ interface UserType {
     picture: string;
 }
 
+interface SnippetType {
+    title: string;
+    files: FilesTypes[];
+}
+
+interface FilesTypes {
+    id: number;
+    filename: string;
+    code: string;
+}
+
 interface AppContextType {
     user: UserType;
+    snippet: SnippetType;
+    setSnippet: (snippet: SnippetType) => void;
+    files: FilesTypes[];
+    setFiles: (files: FilesTypes[]) => void;
 }
 
 export let AppContext = createContext<AppContextType | undefined>(undefined);
@@ -24,8 +39,20 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
     picture: "",
   });
 
+  const [files, setFiles] = useState<FilesTypes[]>([
+    { id: Date.now() , filename: "", code: "" },
+  ]);
+
+  const [snippet, setSnippet] = useState<SnippetType>(
+    { title: "", files: files } 
+  );
+
   const AuthValue: AppContextType = {
     user,
+    snippet,
+    setSnippet,
+    files,
+    setFiles,
   }
   
     return (
@@ -36,9 +63,9 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
   };
   
 export const useAppContext = () => {
-    const context = useContext(AppContext);
-    if (!context) {
+    const appContext = useContext(AppContext);
+    if (!appContext) {
       throw new Error('useAppContext must be used within a ContextProvider');
     }
-    return context;
+    return appContext;
 };

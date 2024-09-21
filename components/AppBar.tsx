@@ -9,7 +9,6 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   Button,
   DropdownItem,
   DropdownTrigger,
@@ -17,14 +16,15 @@ import {
   DropdownMenu,
   Avatar,
   Spinner,
+  Tooltip,
 } from "@nextui-org/react";
-
+import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function AppBar() {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const menuItems = ["Profile", "Dashboard", "Log Out"];
 
@@ -45,18 +45,18 @@ export default function AppBar() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <p className="font-bold text-inherit text-lg">CoSnippet</p>
+          <Link href={"/"} className="font-bold text-inherit text-lg">CoSnippet</Link>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem isActive>
-          <Link href="#" aria-current="page">
+          <Link href="/" aria-current="page">
             Home
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="#">
+          <Link color="foreground" href="/">
             Integrations
           </Link>
         </NavbarItem>
@@ -64,6 +64,16 @@ export default function AppBar() {
       <NavbarContent justify="end">
         {session ? (
           <>
+            <Tooltip
+          placement={"bottom"}
+          content={"Create Snippet"}
+          color="default"
+          size="sm"
+        >
+            <Link href={"/create"} className="hover:bg-gray-900 rounded-md p-1">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6" viewBox="0 0 24 24"><path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"></path></svg>
+            </Link>
+            </Tooltip>
             <NavbarItem>
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
@@ -144,8 +154,7 @@ export default function AppBar() {
           <NavbarMenuItem key={index}>
             <Link
               className="w-full text-white"
-              href="#"
-              size="lg"
+              href="/"
             >
               {item}
             </Link>
