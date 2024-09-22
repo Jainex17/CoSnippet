@@ -3,6 +3,8 @@ import "./globals.css";
 import 'prismjs/themes/prism-funky.css';
 import { Provider } from "@/components/Provider";
 import AppBar from "@/components/AppBar";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: "CoSnippet",
@@ -20,6 +22,14 @@ export default function RootLayout({
         <Provider>
           <AppBar />
           {children}
+          <ToastContainer
+            theme="dark"
+            position="top-center"
+            autoClose={1500}
+            hideProgressBar={false}
+            stacked={true}
+            pauseOnHover={false}
+          />
         </Provider>
       </body>
     </html>

@@ -14,6 +14,51 @@ model User {
   name    String?  @db.VarChar(255)
   picture String?  @db.VarChar(255)
   createdAt DateTime @default(now())
+  
+  snippet Snippet[]
+  likes   SnippetLikes[]
 
   @@map("user")
+}
+
+
+model Snippet {
+  sid       Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  totalFiles Int
+  totalLikes Int
+  createdAt DateTime @default(now())
+  uid       Int
+
+  files     Files[]
+  likes     SnippetLikes[]
+  
+  user      User     @relation(fields: [uid], references: [id])
+  
+  @@map("post")
+}
+
+model Files {
+  fid       Int      @id @unique
+  filename  String   @db.VarChar(255) @unique
+  code      String   @db.Text
+  sid       Int
+  
+  snippet   Snippet @relation(fields: [sid], references: [sid])
+  
+  @@map("files")
+}
+
+model SnippetLikes {
+  lid       Int
+  sid       Int
+  uid       Int
+  hasLiked  Boolean
+  hasDisliked Boolean
+
+  snippet   Snippet @relation(fields: [sid], references: [sid])
+  user      User     @relation(fields: [uid], references: [id])
+  
+  @@id([sid, uid])
+  @@map("snippet_likes")
 }

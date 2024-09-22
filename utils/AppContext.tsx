@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface UserType {
-    id: string;
+    id: number;
     email: string;
     name: string;
     picture: string;
@@ -12,6 +12,7 @@ interface UserType {
 interface SnippetType {
     title: string;
     files: FilesTypes[];
+    uid: number;
 }
 
 interface FilesTypes {
@@ -33,7 +34,7 @@ export let AppContext = createContext<AppContextType | undefined>(undefined);
 export const ContextProvider = ({ children }: { children: ReactNode }) => {
   
   const [user, setUser] = useState<UserType>({
-    id: "",
+    id: -1,
     email: "",
     name: "",
     picture: "",
@@ -44,7 +45,7 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
   ]);
 
   const [snippet, setSnippet] = useState<SnippetType>(
-    { title: "", files: files } 
+    { title: "", files: files, uid: user.id } 
   );
 
   const AuthValue: AppContextType = {

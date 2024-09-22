@@ -116,7 +116,7 @@ export const Card = ({ snippet }: CardProps) => {
                 ></path>
               </svg>
             </button>
-            <span className="text-sm">{likes}</span>
+            <span className="text-sm select-none">{likes}</span>
             <button 
               className="hover:bg-[#333D42] hover:text-blue-600 p-2 rounded-full"
               onClick={handleDisLike}

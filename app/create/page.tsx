@@ -3,6 +3,7 @@
 import { Button, Divider } from "@nextui-org/react";
 import { IDE } from "@/components/IDE";
 import { useAppContext } from "@/utils/AppContext";
+import { toast } from "react-toastify";
 
 const CreateSnippet = () => {
   
@@ -11,7 +12,36 @@ const CreateSnippet = () => {
   const handleAddFile = () => {
     setFiles([...files, { id: Date.now(), filename: "", code: "" }]);
   }
+
+  const handleCreateSnippet = () => {
+    if(snippet.title === "") {
+      toast.error("Please enter a title for the snippet");
+      return;
+    }
+
+    if(files.map(file => file.filename).includes("")) {
+      toast.error("Please enter a filename for all files");
+      return;
+    }
+
+    if(files.map(file => file.code).includes("")) {
+      toast.error("Please enter code for all files");
+      return;
+    }
+
+    // same file name check
+    const filenames = files.map(file => file.filename);
+    const duplicate = filenames.some((filename, index) => filenames.indexOf(filename) !== index);
+    if(duplicate) {
+      toast.error("Please enter unique filenames");
+      return;
+    }
+    
+
+    
+  }
   
+
   return (
     <>
       <h2 className="text-xl md:text-2xl flex items-center gap-3 font-semibold mx-5 my-5 md:mx-20">
@@ -60,7 +90,7 @@ const CreateSnippet = () => {
             Add file
           </Button>
 
-          <Button color="primary" className="rounded-md">
+          <Button color="primary" className="rounded-md" onClick={handleCreateSnippet}>
             Create Snippet
           </Button>
         </div>
