@@ -3,44 +3,14 @@
 import { Button, Divider } from "@nextui-org/react";
 import { IDE } from "@/components/IDE";
 import { useAppContext } from "@/utils/AppContext";
-import { toast } from "react-toastify";
 
 const CreateSnippet = () => {
   
-  const { snippet, setSnippet, files, setFiles } = useAppContext();
+  const { snippet, setSnippet, files, setFiles, handleCreateSnippet } = useAppContext();
 
   const handleAddFile = () => {
     setFiles([...files, { id: Date.now(), filename: "", code: "" }]);
   }
-
-  const handleCreateSnippet = () => {
-    if(snippet.title === "") {
-      toast.error("Please enter a title for the snippet");
-      return;
-    }
-
-    if(files.map(file => file.filename).includes("")) {
-      toast.error("Please enter a filename for all files");
-      return;
-    }
-
-    if(files.map(file => file.code).includes("")) {
-      toast.error("Please enter code for all files");
-      return;
-    }
-
-    // same file name check
-    const filenames = files.map(file => file.filename);
-    const duplicate = filenames.some((filename, index) => filenames.indexOf(filename) !== index);
-    if(duplicate) {
-      toast.error("Please enter unique filenames");
-      return;
-    }
-    
-
-    
-  }
-  
 
   return (
     <>

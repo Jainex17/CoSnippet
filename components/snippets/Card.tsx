@@ -4,24 +4,23 @@ import { Avatar, Divider } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import Prism from "prismjs";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
+import { SnippetType } from "./Cards";
+import "prismjs/components/prism-typescript";
 
 interface CardProps {
-  snippet: {
-    language: string;
-    code: string;
-  };
+  snippets: SnippetType;
 }
 
-export const Card = ({ snippet }: CardProps) => {
+export const Card = ({ snippets }: CardProps) => {
   useEffect(() => {
-    loadPrismLanguage(snippet.language);
+    loadPrismLanguage(snippets.file[0].language);
 
     if (typeof Prism !== "undefined") {
       Prism.highlightAll();
     }
-  }, [snippet.language]);
+  }, [snippets.file[0].language]);
 
-  const [likes, setLikes] = useState(0);
+  const [likes, setLikes] = useState(snippets.totalLikes);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisLiked, setIsDisLiked] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -72,7 +71,7 @@ export const Card = ({ snippet }: CardProps) => {
         <div className="flex justify-between items-center">
           <div>
             <h3 className="text-xl md:text-2xl font-semibold">
-              Title of the card - card component
+              {snippets.title}
             </h3>
 
             <div className="flex gap-3 md:gap-5 mt-3">
@@ -80,11 +79,11 @@ export const Card = ({ snippet }: CardProps) => {
                 isBordered
                 radius="full"
                 className="w-8 h-8 md:w-10 md:h-10"
-                src="https://nextui.org/avatars/avatar-4.png"
+                src={snippets.user.picture || "https://images.unsplash.com/broken"}
               />
               <div className="flex flex-col gap-1 items-start justify-center">
                 <h4 className="text-xs md:text-small font-semibold leading-none text-default-600">
-                  Zoey Lang
+                  {snippets.user.name}
                 </h4>
                 <h5 className="text-[0.6rem] md:text-xs tracking-tight text-default-400">
                   23/3/2023
@@ -94,8 +93,8 @@ export const Card = ({ snippet }: CardProps) => {
           </div>
         </div>
         <div className="border border-gray-800 rounded-lg py-1 px-4 my-4 text-xs">
-          <pre className={`language-${snippet.language}`}>
-            <code>{snippet.code}</code>
+          <pre className={`language-${snippets.file[0].language}`}>
+            <code>{snippets.file[0].code}</code>
           </pre>
         </div>
 

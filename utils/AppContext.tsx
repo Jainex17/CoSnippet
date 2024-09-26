@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, ReactNode, useContext, useState } from "react";
+import { toast } from "react-toastify";
 
 interface UserType {
     id: number;
@@ -11,8 +12,6 @@ interface UserType {
 
 interface SnippetType {
     title: string;
-    files: FilesTypes[];
-    uid: number;
 }
 
 interface FilesTypes {
@@ -23,10 +22,12 @@ interface FilesTypes {
 
 interface AppContextType {
     user: UserType;
+    setUser: (user: UserType) => void;
     snippet: SnippetType;
     setSnippet: (snippet: SnippetType) => void;
     files: FilesTypes[];
     setFiles: (files: FilesTypes[]) => void;
+    handleCreateSnippet: () => void;
 }
 
 export let AppContext = createContext<AppContextType | undefined>(undefined);
@@ -45,17 +46,60 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
   ]);
 
   const [snippet, setSnippet] = useState<SnippetType>(
-    { title: "", files: files, uid: user.id } 
+    { title: "" } 
   );
+
+  const handleCreateSnippet = async () => {
+    if(snippet.title === "") {
+      toast.error("Please enter a title for the snippet");
+      return;
+    }
+
+    if(files.map(file => file.filename).includes("")) {
+      toast.error("Please enter a filename for all files");
+      return;
+    }
+
+    if(files.map(file => file.code).includes("")) {
+      toast.error("Please enter code for all files");
+      return;
+    }
+
+    // same file name check
+    const filenames = files.map(file => file.filename);
+    const duplicate = filenames.some((filename, index) => filenames.indexOf(filename) !== index);
+    if(duplicate) {
+      toast.error("Please enter unique filenames");
+      return;
+    }
+    const userid = user.id;
+
+    const res = await fetch("/api/snippet/createsnippet",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userid, snippet, snippetFiles:files }),
+    });
+
+    if(res) {
+      toast.success("Snippet created successfully");
+      setFiles([{ id: Date.now(), filename: "", code: "" }]);
+      setSnippet({ title: "" });
+    }
+  }
 
   const AuthValue: AppContextType = {
     user,
+    setUser,
     snippet,
     setSnippet,
     files,
     setFiles,
+    handleCreateSnippet,
   }
-  
+
     return (
       <AppContext.Provider value={AuthValue}>
         {children}

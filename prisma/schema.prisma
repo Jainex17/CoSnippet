@@ -11,16 +11,15 @@ datasource db {
 model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique @db.VarChar(255)
-  name    String?  @db.VarChar(255)
+  name    String  @db.VarChar(255)
   picture String?  @db.VarChar(255)
   createdAt DateTime @default(now())
   
   snippet Snippet[]
-  likes   SnippetLikes[]
+  likes SnippetLike[]
 
   @@map("user")
 }
-
 
 model Snippet {
   sid       Int      @id @default(autoincrement())
@@ -30,26 +29,27 @@ model Snippet {
   createdAt DateTime @default(now())
   uid       Int
 
-  files     Files[]
-  likes     SnippetLikes[]
+  file     File[]
+  like      SnippetLike[]
   
   user      User     @relation(fields: [uid], references: [id])
   
-  @@map("post")
+  @@map("snippet")
 }
 
-model Files {
-  fid       Int      @id @unique
+model File {
+  fid       Int      @id @default(autoincrement())
   filename  String   @db.VarChar(255) @unique
   code      String   @db.Text
+  language  String   @db.VarChar(255)
   sid       Int
   
   snippet   Snippet @relation(fields: [sid], references: [sid])
   
-  @@map("files")
+  @@map("file")
 }
 
-model SnippetLikes {
+model SnippetLike {
   lid       Int
   sid       Int
   uid       Int
@@ -60,5 +60,5 @@ model SnippetLikes {
   user      User     @relation(fields: [uid], references: [id])
   
   @@id([sid, uid])
-  @@map("snippet_likes")
+  @@map("snippet_like")
 }

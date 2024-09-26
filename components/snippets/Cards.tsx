@@ -1,37 +1,53 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card } from "./Card";
+import { LoadingSnippet } from "./LoadingSnippet";
 
-const snippet = [
-  {
-    language: "jsx",
-    code: `import React from 'react'
-import ReactDOM from 'react-dom'
-import Markdown from 'react-markdown'
-import rehypeHighlight from 'rehype-highlight'
+interface FileType {
+  filename: string;
+  language: string;
+  code: string;
+}
 
-const markdown = "
-# Your markdown here
-"
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>{markdown}</Markdown>,
-  document.querySelector('#content')
-)`
-  },
-  {
-    language: "typescript",
-    code: 
-    `interface types {\n    id: number;\n}`}
-];
-
+export interface SnippetType {
+  title: string;
+  file: FileType[];
+  user: {
+    name: string;
+    picture: string;
+  };
+  createdAt: string;
+  totalLikes: number;
+}
 
 export const Cards = () => {
+
+  const [snippets, setSnippets] = useState<SnippetType[]>();
+
+  async function getSnippets() {
+    const res = await fetch("/api/snippet/getsnippets");
+    const data = await res.json();
+    setSnippets(data);
+  }
+
+  useEffect(() => {
+    getSnippets();
+  }, []);
+
   return (
     <>
       <div className="my-10 max-w-3xl mx-10 md:mx-auto">
+      
+      {
+        !snippets ? <LoadingSnippet /> : snippets.map((snip, index) => (
+          <Card key={index} snippets={snip} />
+        ))
+      }
 
-      {snippet.map((snip, index) => (
-        <Card key={index} snippet={snip} />
-      ))}
+      {/* {snippets && snippets.map((snip, index) => (
+        <Card key={index} snippets={snip} />
+      ))} */}
       </div>
     </>
   );

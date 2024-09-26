@@ -20,9 +20,12 @@ import {
 } from "@nextui-org/react";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useAppContext } from "@/utils/AppContext";
 
 export default function AppBar() {
   const { data: session } = useSession();
+  const { user, setUser } = useAppContext();
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +36,32 @@ export default function AppBar() {
     signIn("google");
   }
 
+  const setUserData = async (email: string) => {
+    const res = await fetch("/api/user/getuser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    })
+    
+    if (res) {
+      const data = await res.json();
+      setUser({
+        id: data.id,
+        email: data.email,
+        name: data.username,
+        picture: data.picture,
+      });
+    }
+  };
+
   useEffect(() => {
+
+    if (session?.user?.email && user.email === "") {
+      setUserData(session.user.email);
+    }
+
     setLoading(false);
   }, [session]);
 
