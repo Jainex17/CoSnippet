@@ -15,7 +15,7 @@ model User {
   picture String?  @db.VarChar(255)
   createdAt DateTime @default(now())
   
-  snippet Snippet[]
+  snippets Snippet[]
   likes SnippetLike[]
 
   @@map("user")
@@ -25,15 +25,16 @@ model Snippet {
   sid       Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
   totalFiles Int
-  totalLikes Int
+  totalLikes Int @default(0)
   createdAt DateTime @default(now())
   uid       Int
 
-  file     File[]
-  like      SnippetLike[]
+  files     File[]
+  likes      SnippetLike[]
   
   user      User     @relation(fields: [uid], references: [id])
   
+  @@index([uid])  // Index for better performance
   @@map("snippet")
 }
 
@@ -46,19 +47,24 @@ model File {
   
   snippet   Snippet @relation(fields: [sid], references: [sid])
   
+  @@index([sid]) 
   @@map("file")
 }
 
 model SnippetLike {
-  lid       Int
+  lid       Int     @id @default(autoincrement())
   sid       Int
   uid       Int
-  hasLiked  Boolean
-  hasDisliked Boolean
+  reaction ReactionType 
 
   snippet   Snippet @relation(fields: [sid], references: [sid])
   user      User     @relation(fields: [uid], references: [id])
   
-  @@id([sid, uid])
+  @@index([sid, uid]) 
   @@map("snippet_like")
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
 }

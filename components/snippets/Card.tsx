@@ -6,28 +6,59 @@ import Prism from "prismjs";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
 import { SnippetType } from "./Cards";
 import "prismjs/components/prism-typescript";
+import { useAppContext } from "@/utils/AppContext";
 
 interface CardProps {
   snippets: SnippetType;
 }
 
 export const Card = ({ snippets }: CardProps) => {
+
+  const { user } = useAppContext();
+
   useEffect(() => {
-    loadPrismLanguage(snippets.file[0].language);
+    loadPrismLanguage(snippets.files[0].language);
 
     if (typeof Prism !== "undefined") {
       Prism.highlightAll();
     }
-  }, [snippets.file[0].language]);
+  }, [snippets.files[0].language]);
+
+  useEffect(() => {
+    snippets.likes.forEach((like) => {
+      if (like.uid === user.id) {
+        if (like.reaction === "LIKE") {
+          setIsLiked(true);
+        } else {
+          setIsDisLiked(true);
+        }
+      }
+    });
+  }, []);
 
   const [likes, setLikes] = useState(snippets.totalLikes);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisLiked, setIsDisLiked] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (isProcessing) return; 
     setIsProcessing(true); 
+    
+    const res = await fetch("/api/snippet/reactSnippet", {
+      method: "POST",
+      body: JSON.stringify({ 
+        uid: user.id,
+        sid: snippets.sid,
+        islike: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if(res.status === 200){
+      
     if (isLiked) {
       setLikes(likes - 1); 
     } else {
@@ -38,13 +69,29 @@ export const Card = ({ snippets }: CardProps) => {
       }
     }
     setIsLiked(!isLiked);
-    setIsDisLiked(false);
+    setIsDisLiked(false); 
+  }
+
     setTimeout(() => setIsProcessing(false), 300); 
   };
 
-  const handleDisLike = () => {
+  const handleDisLike = async () => {
     if (isProcessing) return; 
     setIsProcessing(true); 
+
+    const res = await fetch("/api/snippet/reactSnippet", {
+      method: "POST",
+      body: JSON.stringify({ 
+        uid: user.id,
+        sid: snippets.sid,
+        islike: false,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if(res.status === 200){
     if (isDisLiked) {
       setLikes(likes + 1); 
     } else {
@@ -56,7 +103,8 @@ export const Card = ({ snippets }: CardProps) => {
     }
     setIsDisLiked(!isDisLiked);
     setIsLiked(false);
-    setTimeout(() => setIsProcessing(false), 300); 
+  }
+    setTimeout(() => setIsProcessing(false), 900); 
   };
 
    const backgroundColor = isLiked
@@ -79,6 +127,7 @@ export const Card = ({ snippets }: CardProps) => {
                 isBordered
                 radius="full"
                 className="w-8 h-8 md:w-10 md:h-10"
+                showFallback
                 src={snippets.user.picture || "https://images.unsplash.com/broken"}
               />
               <div className="flex flex-col gap-1 items-start justify-center">
@@ -93,8 +142,8 @@ export const Card = ({ snippets }: CardProps) => {
           </div>
         </div>
         <div className="border border-gray-800 rounded-lg py-1 px-4 my-4 text-xs">
-          <pre className={`language-${snippets.file[0].language}`}>
-            <code>{snippets.file[0].code}</code>
+          <pre className={`language-${snippets.files[0].language}`}>
+            <code>{snippets.files[0].code}</code>
           </pre>
         </div>
 

@@ -10,13 +10,21 @@ interface FileType {
   code: string;
 }
 
+interface LikesTypes {
+  sid: number;
+  uid: number;
+  reaction: string;
+}
+
 export interface SnippetType {
+ sid: number;
   title: string;
-  file: FileType[];
+  files: FileType[];
   user: {
     name: string;
     picture: string;
   };
+  likes: LikesTypes[];
   createdAt: string;
   totalLikes: number;
 }
@@ -40,7 +48,7 @@ export const Cards = () => {
       <div className="my-10 max-w-3xl mx-10 md:mx-auto">
       
       {
-        !snippets ? <LoadingSnippet /> : snippets.map((snip, index) => (
+        !snippets ? <LoadingSnippet /> : snippets.length > 0 && snippets.map((snip, index) => (
           <Card key={index} snippets={snip} />
         ))
       }

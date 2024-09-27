@@ -11,8 +11,8 @@ export const LoadingSnippet = () => {
               <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-600 rounded-full"></div>
 
               <div className="flex flex-col gap-1 items-start justify-center">
-                <div className="w-8 h-8 md:w-24 md:h-3 rounded bg-gray-600" />
-                <div className="w-8 h-8 md:w-16 md:h-3 rounded bg-gray-600" />
+                <div className="w-24 h-6 md:w-24 md:h-3 rounded bg-gray-600" />
+                <div className="w-16 h-6 md:w-16 md:h-3 rounded bg-gray-600" />
               </div>
               
             </div>
@@ -30,8 +30,8 @@ export const LoadingSnippet = () => {
               <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-600 rounded-full"></div>
 
               <div className="flex flex-col gap-1 items-start justify-center">
-                <div className="w-8 h-8 md:w-24 md:h-3 rounded bg-gray-600" />
-                <div className="w-8 h-8 md:w-16 md:h-3 rounded bg-gray-600" />
+                <div className="w-24 h-6 md:w-24 md:h-3 rounded bg-gray-600" />
+                <div className="w-16 h-6 md:w-16 md:h-3 rounded bg-gray-600" />
               </div>
               
             </div>

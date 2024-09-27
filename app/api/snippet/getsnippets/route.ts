@@ -10,8 +10,9 @@ export async function GET(): Promise<NextResponse> {
     try {
         const snippets = await db.snippet.findMany({
             select: {
+                sid: true,
                 title: true,
-                file: {
+                files: {
                     take: 1,
                     select: {
                         filename: true,
@@ -25,6 +26,7 @@ export async function GET(): Promise<NextResponse> {
                         picture: true
                     }
                 },
+                likes: true,
                 createdAt: true,
                 totalLikes: true
             }
@@ -32,7 +34,7 @@ export async function GET(): Promise<NextResponse> {
 
         const processedSnippets = snippets.map(snippet => ({
             ...snippet,
-            file: snippet.file.map(file => ({
+            files: snippet.files.map(file => ({
                 ...file,
                 code: getFirst10Lines(file.code) 
             }))
