@@ -7,6 +7,7 @@ import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
 import { SnippetType } from "./Cards";
 import "prismjs/components/prism-typescript";
 import { useAppContext } from "@/utils/AppContext";
+import { toast } from "react-toastify";
 
 interface CardProps {
   snippets: SnippetType;
@@ -42,6 +43,12 @@ export const Card = ({ snippets }: CardProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleLike = async () => {
+    
+    if(user.id === -1) {
+      toast.error("Please Login");
+      return;
+    }
+
     if (isProcessing) return; 
     setIsProcessing(true); 
     
@@ -76,6 +83,12 @@ export const Card = ({ snippets }: CardProps) => {
   };
 
   const handleDisLike = async () => {
+
+    if(user.id === -1) {
+      toast.error("Please Login");
+      return;
+    }
+
     if (isProcessing) return; 
     setIsProcessing(true); 
 

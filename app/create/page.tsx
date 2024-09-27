@@ -3,14 +3,25 @@
 import { Button, Divider } from "@nextui-org/react";
 import { IDE } from "@/components/IDE";
 import { useAppContext } from "@/utils/AppContext";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
 
 const CreateSnippet = () => {
   
-  const { snippet, setSnippet, files, setFiles, handleCreateSnippet } = useAppContext();
+  const { snippet, user, setSnippet, files, setFiles, handleCreateSnippet } = useAppContext();
 
   const handleAddFile = () => {
     setFiles([...files, { id: Date.now(), filename: "", code: "" }]);
   }
+
+
+  useEffect(() => {
+    if(user.id === -1) {
+      toast.error("Please Login");
+      redirect("/");
+    }
+  }, [user.id]);
 
   return (
     <>
