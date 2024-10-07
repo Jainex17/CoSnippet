@@ -9,12 +9,20 @@ interface FilesTypes {
 
 export async function POST(req: Request) {
     try {
-        const { userid, snippet, snippetFiles } = await req.json();
+        const { username, snippet, snippetFiles } = await req.json();
+        
+        if(username === undefined || snippet === undefined || snippetFiles === undefined) {
+            return NextResponse.error();
+        }
 
-        if(userid === undefined || snippet === undefined || snippetFiles === undefined) {
-            return NextResponse.json({
-                message: "Invalid request",
-            });
+        const user = await db.user.findFirst({
+            where: {
+                username,
+            },
+        });
+
+        if(!user) {
+            return NextResponse.error();
         }
 
         const createSnippet = await db.snippet.create({
@@ -22,7 +30,7 @@ export async function POST(req: Request) {
                 title: snippet.title,
                 totalFiles: snippetFiles.length,
                 totalLikes: 0,
-                uid: userid,
+                uid: user.id,
             },
         });
 
@@ -52,9 +60,7 @@ export async function POST(req: Request) {
                         },
                     });
 
-                    return NextResponse.json({
-                        message: "Failed to create snippet",
-                    });
+                    return NextResponse.error();
                 }
             }
 
@@ -65,8 +71,6 @@ export async function POST(req: Request) {
 
     } catch(error) {
         console.error(error);
-        return NextResponse.json({
-            message: "Internal server error",
-        });
+        return NextResponse.error();
     }
 }

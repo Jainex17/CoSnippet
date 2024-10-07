@@ -6,8 +6,11 @@ import { toast } from "react-toastify";
 interface UserType {
     id: number;
     email: string;
-    name: string;
+    username: string;
+    nickname: string;
     picture: string;
+    createdAt: string;
+
 }
 
 interface SnippetType {
@@ -37,8 +40,10 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserType>({
     id: -1,
     email: "",
-    name: "",
+    username: "",
+    nickname: "",
     picture: "",
+    createdAt: "",
   });
 
   const [files, setFiles] = useState<FilesTypes[]>([
@@ -72,7 +77,7 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
       toast.error("Please enter unique filenames");
       return;
     }
-    const userid = user.id;
+    const username = user.username;
 
     const res = await fetch("/api/snippet/createsnippet",
     {
@@ -80,7 +85,7 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userid, snippet, snippetFiles:files }),
+      body: JSON.stringify({ username, snippet, snippetFiles:files }),
     });
 
     if(res) {

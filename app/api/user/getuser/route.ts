@@ -3,28 +3,32 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
     try {
-        const { email } = await req.json();
+        const { username } = await req.json();
 
-        if (!email) {
+        if (!username) {
             return NextResponse.json({
-                message: 'Email is required',
+                message: 'Username not provided',
             });
         }
 
         const curruser = await db.user.findUnique({
-            where: { email },
+            where: { username },
+            select: {
+                id: true,
+                username: true,
+                nickname: true,
+                email: true,
+                picture: true,
+                createdAt: true,
+            },
         });
 
         if (curruser) {
-            return NextResponse.json({
-                id: curruser.id,
-                email,
-                username: curruser.name,
-                picture: curruser.picture,
-            });
+            return NextResponse.json(curruser);
         } else {
             return NextResponse.json({
                 message: 'User not found',
+                status: 404,
             });
         }
     } catch (error) {

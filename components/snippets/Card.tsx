@@ -8,6 +8,7 @@ import { SnippetType } from "./Cards";
 import "prismjs/components/prism-typescript";
 import { useAppContext } from "@/utils/AppContext";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 interface CardProps {
   snippets: SnippetType;
@@ -131,24 +132,23 @@ export const Card = ({ snippets }: CardProps) => {
       <div className="my-5">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-xl md:text-2xl font-semibold">
-              {snippets.title}
-            </h3>
-
-            <div className="flex gap-3 md:gap-5 mt-3">
+            <div className="flex gap-3 md:gap-5 mt-3 items-center">
               <Avatar
                 isBordered
                 radius="full"
-                className="w-8 h-8 md:w-10 md:h-10"
-                showFallback
+                className="w-8 h-8 md:w-10 md:h-10 hidden sm:block"
                 src={snippets.user.picture || "https://images.unsplash.com/broken"}
+                showFallback
               />
               <div className="flex flex-col gap-1 items-start justify-center">
-                <h4 className="text-xs md:text-small font-semibold leading-none text-default-600">
-                  {snippets.user.name}
+                <h4 className="text-sm md:text-lg font-semibold leading-none text-default-600 flex items-center gap-1">
+                  <Link href={"/" + snippets.user.username} className="text-blue-500 hover:underline"> {snippets.user.username} </Link> /
+                  <Link href={"/" + snippets.user.username} className="text-blue-500 hover:underline overflow-hidden truncate w-36 sm:w-72 md:w-[30rem]">
+                    {snippets.title}
+                  </Link>
                 </h4>
                 <h5 className="text-[0.6rem] md:text-xs tracking-tight text-default-400">
-                  23/3/2023
+                  {snippets.createdAt.split("T")[0].split("-").reverse().join("-")}
                 </h5>
               </div>
             </div>
@@ -195,7 +195,7 @@ export const Card = ({ snippets }: CardProps) => {
             </button>
           </div>
 
-          <div className="bg-[#201421] rounded-full gap-1">
+          {/* <div className="bg-[#201421] rounded-full gap-1">
             <button className="p-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -208,7 +208,7 @@ export const Card = ({ snippets }: CardProps) => {
                 ></path>
               </svg>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       <Divider />

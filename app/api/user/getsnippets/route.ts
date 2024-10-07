@@ -6,9 +6,16 @@ function getFirst10Lines(code: string): string {
     return lines.slice(0, 20).join('\n');
 }
 
-export async function GET(): Promise<NextResponse> {
+export async function POST(req: Request) {
     try {
+        const { username } = await req.json();
+
+        if (!username) {
+            return NextResponse.error();
+        }
+
         const snippets = await db.snippet.findMany({
+            where: { user: { username } },
             select: {
                 sid: true,
                 title: true,

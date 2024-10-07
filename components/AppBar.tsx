@@ -21,15 +21,17 @@ import {
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useAppContext } from "@/utils/AppContext";
+import { useRouter } from "next/navigation";
 
 export default function AppBar() {
   const { data: session } = useSession();
   const { user, setUser } = useAppContext();
-  
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const menuItems = ["Profile", "Dashboard", "Log Out"];
+  const menuItems = ["Profile", "Log Out"];
+  const router = useRouter();
 
   function handleSignin() {
     setLoading(true);
@@ -37,27 +39,29 @@ export default function AppBar() {
   }
 
   const setUserData = async (email: string) => {
+    const username = email.split("@")[0];
     const res = await fetch("/api/user/getuser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
-    })
-    
+      body: JSON.stringify({ username }),
+    });
+
     if (res) {
       const data = await res.json();
       setUser({
         id: data.id,
         email: data.email,
-        name: data.username,
+        username: data.username,
+        nickname: data.nickname,
         picture: data.picture,
+        createdAt: data.createdAt,
       });
     }
   };
 
   useEffect(() => {
-
     if (session?.user?.email && user.email === "") {
       setUserData(session.user.email);
     }
@@ -73,7 +77,9 @@ export default function AppBar() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <Link href={"/"} className="font-bold text-inherit text-lg">CoSnippet</Link>
+          <Link href={"/"} className="font-bold text-inherit text-lg">
+            CoSnippet
+          </Link>
         </NavbarBrand>
       </NavbarContent>
 
@@ -93,14 +99,26 @@ export default function AppBar() {
         {session ? (
           <>
             <Tooltip
-          placement={"bottom"}
-          content={"Create Snippet"}
-          color="default"
-          size="sm"
-        >
-            <Link href={"/create"} className="hover:bg-gray-900 rounded-md p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-6" viewBox="0 0 24 24"><path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"></path></svg>
-            </Link>
+              placement={"bottom"}
+              content={"Create Snippet"}
+              color="default"
+              size="sm"
+            >
+              <Link
+                href={"/create"}
+                className="hover:bg-gray-900 rounded-md p-1"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                  ></path>
+                </svg>
+              </Link>
             </Tooltip>
             <NavbarItem>
               <Dropdown placement="bottom-end">
@@ -118,17 +136,14 @@ export default function AppBar() {
                     }
                   />
                 </DropdownTrigger>
-                
+
                 <DropdownMenu aria-label="Profile Actions" variant="flat">
                   <DropdownItem className="h-14 gap-2" textValue="user email">
                     <p className="font-semibold">Signed in as</p>
                     <p className="font-semibold">{session.user?.email}</p>
                   </DropdownItem>
-                  <DropdownItem>Profile</DropdownItem>
-                  <DropdownItem
-                    color="danger"
-                    onClick={() => signOut()}
-                  >
+                  <DropdownItem onClick={()=> router.push(`${user.username}`)}>Profile</DropdownItem>
+                  <DropdownItem color="danger" onClick={() => signOut()}>
                     Log Out
                   </DropdownItem>
                 </DropdownMenu>
@@ -141,7 +156,9 @@ export default function AppBar() {
               onClick={handleSignin}
               color="primary"
               variant="flat"
-              className={`flex items-center gap-2 ${loading ? "cursor-not-allowed" : ""}`}
+              className={`flex items-center gap-2 ${
+                loading ? "cursor-not-allowed" : ""
+              }`}
               disabled={loading}
             >
               {loading ? (
@@ -180,10 +197,7 @@ export default function AppBar() {
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={index}>
-            <Link
-              className="w-full text-white"
-              href="/"
-            >
+            <Link className="w-full text-white" href="/">
               {item}
             </Link>
           </NavbarMenuItem>

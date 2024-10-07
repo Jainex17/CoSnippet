@@ -21,7 +21,7 @@ export interface SnippetType {
   title: string;
   files: FileType[];
   user: {
-    name: string;
+    username: string;
     picture: string;
   };
   likes: LikesTypes[];
@@ -36,7 +36,7 @@ export const Cards = () => {
   async function getSnippets() {
     const res = await fetch("/api/snippet/getsnippets");
     const data = await res.json();
-    setSnippets(data);
+    setSnippets(data);  
   }
 
   useEffect(() => {
@@ -52,10 +52,6 @@ export const Cards = () => {
           <Card key={index} snippets={snip} />
         ))
       }
-
-      {/* {snippets && snippets.map((snip, index) => (
-        <Card key={index} snippets={snip} />
-      ))} */}
       </div>
     </>
   );

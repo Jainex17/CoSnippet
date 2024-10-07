@@ -26,6 +26,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return false
       }
 
+      const username = email.split("@")[0];
+
       const currentUser = await db.user.findUnique({
         where: { email },
       });
@@ -34,7 +36,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         await db.user.create({
           data: {
             email,
-            name,
+            username: username,
+            nickname: name,
             picture,
           },
         });

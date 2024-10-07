@@ -17,11 +17,11 @@ const CreateSnippet = () => {
 
 
   useEffect(() => {
-    if(user.id === -1) {
+    if(user.username === "") {
       toast.error("Please Login");
       redirect("/");
     }
-  }, [user.id]);
+  }, [user.username]);
 
   return (
     <>
