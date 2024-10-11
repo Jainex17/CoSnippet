@@ -14,7 +14,6 @@ import {
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
-  Avatar,
   Spinner,
   Tooltip,
 } from "@nextui-org/react";
@@ -22,6 +21,7 @@ import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useAppContext } from "@/utils/AppContext";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function AppBar() {
   const { data: session } = useSession();
@@ -123,17 +123,15 @@ export default function AppBar() {
             <NavbarItem>
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
-                  <Avatar
-                    isBordered
-                    as="button"
-                    className="transition-transform"
-                    showFallback
-                    color="secondary"
-                    size="sm"
+                  <Image
+                    alt="User Picture"
                     src={
                       session.user?.image ||
-                      "https://images.unsplash.com/broken"
+                      ""
                     }
+                    width={40}
+                    height={40}
+                    className="transition-transform w-10 h-10 rounded-full cursor-pointer select-none"
                   />
                 </DropdownTrigger>
 

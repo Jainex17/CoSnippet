@@ -59,6 +59,11 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
       toast.error("Please enter a title for the snippet");
       return;
     }
+    
+    if(snippet.title.length > 90) {
+      toast.error("Title should be less than 90 characters");
+      return;
+    }
 
     if(files.map(file => file.filename).includes("")) {
       toast.error("Please enter a filename for all files");
@@ -69,6 +74,7 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
       toast.error("Please enter code for all files");
       return;
     }
+
 
     // same file name check
     const filenames = files.map(file => file.filename);

@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/snippets/Card";
 import { LoadingSnippet } from "@/components/snippets/LoadingSnippet";
-import { Avatar } from "@nextui-org/react";
+import Image from "next/image";
 import { redirect, useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -53,8 +53,8 @@ const Page = () => {
   const router = useRouter();
 
   async function getSnippets() {
-    const username = params.username[0];
-    const res = await fetch("/api/user/getsnippets", {
+    const username = params.username;
+    const res = await fetch("/api/user/mysnippets", {
       method: "POST",
       body: JSON.stringify({ username }),
     });
@@ -63,7 +63,8 @@ const Page = () => {
   }
   
   async function getUserDetails() {
-    const username = params.username[0];
+    
+    const username = params.username;
     const res = await fetch(`/api/user/getuser`, {
       method: "POST",
       body: JSON.stringify({ username }),
@@ -108,11 +109,13 @@ const Page = () => {
         </>
       }
       {!loading && <>
-      <Avatar 
+
+      <Image
         src={userDetails?.picture || ""}
-        isBordered={true}
-        size="lg"
-        className="w-24 h-24 md:w-36 md:h-36"
+        width={100}
+        height={100}
+        className="w-24 h-24 md:w-36 md:h-36 rounded-full"
+        alt="User Image"
       />
 
       <div className="flex flex-col gap-1 sm:items-start items-center">

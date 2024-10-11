@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Divider } from "@nextui-org/react";
+import { Divider } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import Prism from "prismjs";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
@@ -9,13 +9,13 @@ import "prismjs/components/prism-typescript";
 import { useAppContext } from "@/utils/AppContext";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import Image from "next/image";
 
 interface CardProps {
   snippets: SnippetType;
 }
 
 export const Card = ({ snippets }: CardProps) => {
-
   const { user } = useAppContext();
 
   useEffect(() => {
@@ -44,18 +44,23 @@ export const Card = ({ snippets }: CardProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleLike = async () => {
-    
-    if(user.id === -1) {
+    if (user.id === -1) {
       toast.error("Please Login");
       return;
     }
-
-    if (isProcessing) return; 
-    setIsProcessing(true); 
-    
+  
+    if (isProcessing) return;
+    setIsProcessing(true);
+  
+    // Optimistic update
+    const newLikes = isLiked ? likes - 1 : isDisLiked ? likes + 2 : likes + 1;
+    setLikes(newLikes);
+    setIsLiked(!isLiked);
+    setIsDisLiked(false);
+  
     const res = await fetch("/api/snippet/reactSnippet", {
       method: "POST",
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         uid: user.id,
         sid: snippets.sid,
         islike: true,
@@ -64,38 +69,28 @@ export const Card = ({ snippets }: CardProps) => {
         "Content-Type": "application/json",
       },
     });
-
-    if(res.status === 200){
-      
-    if (isLiked) {
-      setLikes(likes - 1); 
-    } else {
-      if (isDisLiked) {
-        setLikes(likes + 2); 
-      } else {
-        setLikes(likes + 1); 
-      }
+  
+    if (res.status !== 200) {
+      setLikes(likes); 
+      setIsLiked(!isLiked); 
+      toast.error("Failed to update like");
     }
-    setIsLiked(!isLiked);
-    setIsDisLiked(false); 
-  }
-
-    setTimeout(() => setIsProcessing(false), 300); 
+  
+    setTimeout(() => setIsProcessing(false), 300);
   };
 
   const handleDisLike = async () => {
-
-    if(user.id === -1) {
+    if (user.id === -1) {
       toast.error("Please Login");
       return;
     }
 
-    if (isProcessing) return; 
-    setIsProcessing(true); 
+    if (isProcessing) return;
+    setIsProcessing(true);
 
     const res = await fetch("/api/snippet/reactSnippet", {
       method: "POST",
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         uid: user.id,
         sid: snippets.sid,
         islike: false,
@@ -105,27 +100,27 @@ export const Card = ({ snippets }: CardProps) => {
       },
     });
 
-    if(res.status === 200){
-    if (isDisLiked) {
-      setLikes(likes + 1); 
-    } else {
-      if (isLiked) {
-        setLikes(likes - 2); 
+    if (res.status === 200) {
+      if (isDisLiked) {
+        setLikes(likes + 1);
       } else {
-        setLikes(likes - 1); 
+        if (isLiked) {
+          setLikes(likes - 2);
+        } else {
+          setLikes(likes - 1);
+        }
       }
+      setIsDisLiked(!isDisLiked);
+      setIsLiked(false);
     }
-    setIsDisLiked(!isDisLiked);
-    setIsLiked(false);
-  }
-    setTimeout(() => setIsProcessing(false), 900); 
+    setTimeout(() => setIsProcessing(false), 900);
   };
 
-   const backgroundColor = isLiked
-   ? 'bg-red-800'
-   : isDisLiked
-   ? 'bg-blue-800' 
-   : 'bg-[#201421]';
+  const backgroundColor = isLiked
+    ? "bg-red-800"
+    : isDisLiked
+    ? "bg-blue-800"
+    : "bg-[#201421]";
 
   return (
     <>
@@ -133,22 +128,36 @@ export const Card = ({ snippets }: CardProps) => {
         <div className="flex justify-between items-center">
           <div>
             <div className="flex gap-3 md:gap-5 mt-3 items-center">
-              <Avatar
-                isBordered
-                radius="full"
-                className="w-8 h-8 md:w-10 md:h-10 hidden sm:block"
-                src={snippets.user.picture || "https://images.unsplash.com/broken"}
-                showFallback
+              <Image
+                src={snippets.user.picture || ""}
+                width={100}
+                height={100}
+                className="w-8 h-8 md:w-10 md:h-10 hidden sm:block rounded-full"
+                alt="User Image"
               />
               <div className="flex flex-col gap-1 items-start justify-center">
                 <h4 className="text-sm md:text-lg font-semibold leading-none text-default-600 flex items-center gap-1">
-                  <Link href={"/" + snippets.user.username} className="text-blue-500 hover:underline"> {snippets.user.username} </Link> /
-                  <Link href={"/" + snippets.user.username} className="text-blue-500 hover:underline overflow-hidden truncate w-36 sm:w-72 md:w-[30rem]">
+                  <Link
+                    href={"/" + snippets.user.username}
+                    className="text-blue-500 hover:underline"
+                  >
+                    
+                    {snippets.user.username}
+                  </Link>
+                  /
+                  <Link
+                    href={"/" + snippets.user.username + "/" + snippets.sid}
+                    className="text-blue-500 hover:underline overflow-hidden truncate w-36 sm:w-72 md:w-[30rem]"
+                  >
                     {snippets.title}
                   </Link>
                 </h4>
                 <h5 className="text-[0.6rem] md:text-xs tracking-tight text-default-400">
-                  {snippets.createdAt.split("T")[0].split("-").reverse().join("-")}
+                  {snippets.createdAt
+                    .split("T")[0]
+                    .split("-")
+                    .reverse()
+                    .join("-")}
                 </h5>
               </div>
             </div>
@@ -161,8 +170,10 @@ export const Card = ({ snippets }: CardProps) => {
         </div>
 
         <div className="flex gap-3">
-          <div className={`${backgroundColor} rounded-full flex items-center gap-1 `}>
-            <button 
+          <div
+            className={`${backgroundColor} rounded-full flex items-center gap-1 `}
+          >
+            <button
               className="hover:bg-[#333D42] hover:text-red-600 p-2 rounded-full"
               onClick={handleLike}
             >
@@ -178,7 +189,7 @@ export const Card = ({ snippets }: CardProps) => {
               </svg>
             </button>
             <span className="text-sm select-none">{likes}</span>
-            <button 
+            <button
               className="hover:bg-[#333D42] hover:text-blue-600 p-2 rounded-full"
               onClick={handleDisLike}
             >

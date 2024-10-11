@@ -10,10 +10,8 @@ export async function POST(req: Request) {
     console.log("islike", islike);
     
     if (!uid || !sid || typeof islike !== "boolean") {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      console.error("Missing required fields");
+      return NextResponse.error();
     }
 
     const alreadyReacted = await db.snippetLike.findFirst({
@@ -107,9 +105,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error liking snippet:", error);
-    return NextResponse.json(
-      { error: "Failed to like snippet" },
-      { status: 500 }
-    );
+    return NextResponse.error();
   }
 }
