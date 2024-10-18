@@ -2,16 +2,7 @@
 
 import { createContext, ReactNode, useContext, useState } from "react";
 import { toast } from "react-toastify";
-
-interface UserType {
-    id: number;
-    email: string;
-    username: string;
-    nickname: string;
-    picture: string;
-    createdAt: string;
-
-}
+import { User } from "./types";
 
 interface SnippetType {
     title: string;
@@ -24,8 +15,8 @@ interface FilesTypes {
 }
 
 interface AppContextType {
-    user: UserType;
-    setUser: (user: UserType) => void;
+    user: User
+    setUser: (user: User) => void;
     snippet: SnippetType;
     setSnippet: (snippet: SnippetType) => void;
     files: FilesTypes[];
@@ -37,13 +28,13 @@ export let AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const ContextProvider = ({ children }: { children: ReactNode }) => {
   
-  const [user, setUser] = useState<UserType>({
-    id: -1,
+  const [user, setUser] = useState<User>({
+    uid: -1,
     email: "",
     username: "",
     nickname: "",
     picture: "",
-    createdAt: "",
+    createdAt: new Date(),
   });
 
   const [files, setFiles] = useState<FilesTypes[]>([
@@ -74,7 +65,6 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
       toast.error("Please enter code for all files");
       return;
     }
-
 
     // same file name check
     const filenames = files.map(file => file.filename);

@@ -3,35 +3,10 @@
 import { useEffect, useState } from "react";
 import { Card } from "./Card";
 import { LoadingSnippet } from "./LoadingSnippet";
-
-interface FileType {
-  filename: string;
-  language: string;
-  code: string;
-}
-
-interface LikesTypes {
-  sid: number;
-  uid: number;
-  reaction: string;
-}
-
-export interface SnippetType {
- sid: number;
-  title: string;
-  files: FileType[];
-  user: {
-    username: string;
-    picture: string;
-  };
-  likes: LikesTypes[];
-  createdAt: string;
-  totalLikes: number;
-}
-
+import { Snippet } from "@/utils/types";
 export const Cards = () => {
 
-  const [snippets, setSnippets] = useState<SnippetType[]>();
+  const [snippets, setSnippets] = useState<Snippet[]>();
 
   async function getSnippets() {
     const res = await fetch("/api/snippet/getsnippets");

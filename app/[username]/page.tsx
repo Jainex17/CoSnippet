@@ -2,53 +2,22 @@
 
 import { Card } from "@/components/snippets/Card";
 import { LoadingSnippet } from "@/components/snippets/LoadingSnippet";
+import { Snippet, User } from "@/utils/types";
 import Image from "next/image";
 import { redirect, useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
-interface userDetails {
-  username: string;
-  email: string;
-  nickname: string;
-  picture: string;
-  createdAt: string;
-}
-
-interface FileType {
-  filename: string;
-  language: string;
-  code: string;
-}
-
-interface LikesTypes {
-  sid: number;
-  uid: number;
-  reaction: string;
-}
-
-export interface SnippetType {
- sid: number;
-  title: string;
-  files: FileType[];
-  user: {
-    username: string;
-    picture: string;
-  };
-  likes: LikesTypes[];
-  createdAt: string;
-  totalLikes: number;
-}
-
 const Page = () => {
 
-  const [userDetails, setUserDetails] = React.useState<userDetails>({
+  const [userDetails, setUserDetails] = React.useState<User>({
+    uid: -1,
     username: "",
     email: "",
     picture: "",
     nickname: "",
-    createdAt: ""
+    createdAt: new Date(),
   });
-  const [snippets, setSnippets] = React.useState<SnippetType[]>();
+  const [snippets, setSnippets] = React.useState<Snippet[]>();
   const [loading, setLoading] = React.useState(true);
 
   const params = useParams();
@@ -78,6 +47,7 @@ const Page = () => {
     }
     
     setUserDetails({
+      uid: -1,
       username: data.username,
       nickname: data.nickname,
       email: data.email,
@@ -125,7 +95,8 @@ const Page = () => {
         <h1 className="text-3xl font-semibold">{userDetails?.nickname}</h1>
         <h2 className="text-default-400">@{userDetails?.username}</h2>
         <h2 className="text-default-400">{userDetails?.email}</h2>
-        <h4 className="text-default-400">Joined on {userDetails.createdAt && userDetails.createdAt !== "" ? userDetails.createdAt.split("T")[0].split("-").reverse().join("-") : null}
+        <h4 className="text-default-400">Joined on {userDetails.createdAt ? new Date(userDetails.createdAt
+        ).toLocaleDateString() : null}
         </h4>
       </div>
 

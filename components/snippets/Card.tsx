@@ -4,18 +4,13 @@ import { Divider } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import Prism from "prismjs";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
-import { SnippetType } from "./Cards";
-import "prismjs/components/prism-typescript";
 import { useAppContext } from "@/utils/AppContext";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import Image from "next/image";
+import { Snippet } from "@/utils/types";
 
-interface CardProps {
-  snippets: SnippetType;
-}
-
-export const Card = ({ snippets }: CardProps) => {
+export const Card = ({ snippets }: { snippets: Snippet }) => {
   const { user } = useAppContext();
 
   useEffect(() => {
@@ -28,7 +23,7 @@ export const Card = ({ snippets }: CardProps) => {
 
   useEffect(() => {
     snippets.likes.forEach((like) => {
-      if (like.uid === user.id) {
+      if (like.uid === user.uid) {
         if (like.reaction === "LIKE") {
           setIsLiked(true);
         } else {
@@ -36,7 +31,7 @@ export const Card = ({ snippets }: CardProps) => {
         }
       }
     });
-  }, [snippets.likes, user.id]);
+  }, [snippets.likes, user.uid]);
 
   const [likes, setLikes] = useState(snippets.totalLikes);
   const [isLiked, setIsLiked] = useState(false);
@@ -44,7 +39,7 @@ export const Card = ({ snippets }: CardProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleLike = async () => {
-    if (user.id === -1) {
+    if (user.uid === -1) {
       toast.error("Please Login");
       return;
     }
@@ -61,7 +56,7 @@ export const Card = ({ snippets }: CardProps) => {
     const res = await fetch("/api/snippet/reactSnippet", {
       method: "POST",
       body: JSON.stringify({
-        uid: user.id,
+        uid: user.uid,
         sid: snippets.sid,
         islike: true,
       }),
@@ -80,7 +75,7 @@ export const Card = ({ snippets }: CardProps) => {
   };
 
   const handleDisLike = async () => {
-    if (user.id === -1) {
+    if (user.uid === -1) {
       toast.error("Please Login");
       return;
     }
@@ -91,7 +86,7 @@ export const Card = ({ snippets }: CardProps) => {
     const res = await fetch("/api/snippet/reactSnippet", {
       method: "POST",
       body: JSON.stringify({
-        uid: user.id,
+        uid: user.uid,
         sid: snippets.sid,
         islike: false,
       }),
@@ -153,11 +148,7 @@ export const Card = ({ snippets }: CardProps) => {
                   </Link>
                 </h4>
                 <h5 className="text-[0.6rem] md:text-xs tracking-tight text-default-400">
-                  {snippets.createdAt
-                    .split("T")[0]
-                    .split("-")
-                    .reverse()
-                    .join("-")}
+                  Created on {new Date(snippets.createdAt).toLocaleDateString()}
                 </h5>
               </div>
             </div>
