@@ -94,7 +94,7 @@ const Editor = ({ index }: { index: number }) => {
     return () => {
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [calculateLineNumbers]);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setLines(calculateLineNumbers());

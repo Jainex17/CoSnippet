@@ -131,7 +131,7 @@ export default function AppBar() {
                     }
                     width={40}
                     height={40}
-                    className="transition-transform w-10 h-10 rounded-full cursor-pointer select-none"
+                    className="transition-transform w-8 h-8 rounded-full cursor-pointer select-none"
                   />
                 </DropdownTrigger>
 

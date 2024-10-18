@@ -9,6 +9,7 @@ import React, { useEffect } from "react";
 interface userDetails {
   username: string;
   email: string;
+  nickname: string;
   picture: string;
   createdAt: string;
 }
@@ -44,6 +45,7 @@ const Page = () => {
     username: "",
     email: "",
     picture: "",
+    nickname: "",
     createdAt: ""
   });
   const [snippets, setSnippets] = React.useState<SnippetType[]>();
@@ -77,6 +79,7 @@ const Page = () => {
     
     setUserDetails({
       username: data.username,
+      nickname: data.nickname,
       email: data.email,
       picture: data.picture,
       createdAt: data.createdAt
@@ -119,7 +122,8 @@ const Page = () => {
       />
 
       <div className="flex flex-col gap-1 sm:items-start items-center">
-        <h1 className="text-2xl font-semibold">{userDetails?.username}</h1>
+        <h1 className="text-3xl font-semibold">{userDetails?.nickname}</h1>
+        <h2 className="text-default-400">@{userDetails?.username}</h2>
         <h2 className="text-default-400">{userDetails?.email}</h2>
         <h4 className="text-default-400">Joined on {userDetails.createdAt && userDetails.createdAt !== "" ? userDetails.createdAt.split("T")[0].split("-").reverse().join("-") : null}
         </h4>

@@ -8,9 +8,14 @@ import { SnippetType } from "../page";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
 import Prism from "prismjs";
 import Image from "next/image";
+import { useAppContext } from "@/utils/AppContext";
+import { toast } from "react-toastify";
 
 const Page = () => {
+  
   const { snippetId }: { snippetId: string } = useParams();
+  const { user } = useAppContext();
+
   const [loading, setLoading] = React.useState(true);
   const [snippets, setSnippets] = React.useState<SnippetType>();
 
@@ -54,6 +59,26 @@ const Page = () => {
     }
   }, [snippets, highlightCode]);
 
+  async function handleDelete() {
+    if(snippets){
+      if (confirm("Are you sure you want to delete this snippet?")) {
+        const toastId = toast.loading("Deleting snippet...");
+        
+        const res = await fetch("/api/snippet/delete", {
+          method: "POST",
+          body: JSON.stringify({ snippetId: snippets.sid }),
+        });
+        
+        if (res.status === 200) {
+          toast.update(toastId, {render: "Snippet deleted successfully", type: "success", isLoading: false, autoClose: 2000});
+          window.location.href = `/${user.username}`;
+        }else{
+          toast.update(toastId, {render: "Failed to delete snippet", type: "error", isLoading: false, autoClose: 2000});
+        }
+      }
+    }
+  }
+
   return (
     <>
       <div className="flex items-center justify-between gap-3 mx-5 mt-10 mb-6 md:mx-20">
@@ -82,11 +107,11 @@ const Page = () => {
             />
             <div className="flex flex-col gap-1 items-start justify-center">
               <h4 className="text-sm md:text-lg font-semibold leading-none text-default-600 flex items-center gap-1">
-                <Link href={"/"} className="text-blue-500 hover:underline">
+                <Link href={"/" + snippets?.user.username} className="text-blue-500 hover:underline">
                   {snippets?.user.username}
                 </Link>
                 /
-                <Link href={"/"} className="text-blue-500 hover:underline">
+                <Link href={"/" + snippets?.user.username + "/" + snippets?.sid} className="text-blue-500 hover:underline">
                   {snippets?.title}
                 </Link>
               </h4>
@@ -99,8 +124,12 @@ const Page = () => {
 
         {loading ? (
           <div className="animate-pulse w-28 h-10 bg-gray-600 rounded-lg" />
-        ) : (
-          <button className="text-red-600 font-bold rounded-lg py-2 px-3 bg-slate-800 flex items-center gap-2 hover:text-white hover:bg-red-700 transition duration-300">
+        ) : 
+          user && snippets?.user.username === user.username &&
+        (
+          <button className="text-red-600 font-bold rounded-lg py-2 px-3 bg-slate-800 flex items-center gap-2 hover:text-white hover:bg-red-700 transition duration-300"
+            onClick={handleDelete}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4"
@@ -111,7 +140,7 @@ const Page = () => {
                 d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"
               ></path>
             </svg>
-            <span className="text-sm ">Delete</span>
+            <span className="text-sm">Delete</span>
           </button>
         )}
       </div>

@@ -85,13 +85,17 @@ export async function POST(req: Request) {
 
         } else {
           // Create new dislike entry
-          await db.snippetLike.create({
+          const createRection = await db.snippetLike.create({
             data: {
               sid,
               uid,
               reaction: "DISLIKE",
             },
           });
+          
+          if(!createRection) {
+            return NextResponse.error();
+          }
 
           await db.snippet.update({
             where: { sid },

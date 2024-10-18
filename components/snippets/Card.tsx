@@ -24,7 +24,7 @@ export const Card = ({ snippets }: CardProps) => {
     if (typeof Prism !== "undefined") {
       Prism.highlightAll();
     }
-  }, [snippets.files[0].language]);
+  }, [snippets.files]);
 
   useEffect(() => {
     snippets.likes.forEach((like) => {
@@ -36,7 +36,7 @@ export const Card = ({ snippets }: CardProps) => {
         }
       }
     });
-  }, []);
+  }, [snippets.likes, user.id]);
 
   const [likes, setLikes] = useState(snippets.totalLikes);
   const [isLiked, setIsLiked] = useState(false);
