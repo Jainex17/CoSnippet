@@ -39,9 +39,7 @@ export async function POST(req: Request) {
                 const currFile: FilesTypes = snippetFiles[i];
                 const fileParts = currFile.filename.split('.');
 
-                let language = fileParts.length > 1 ? fileParts[fileParts.length - 1] : "txt";
-                if(language === "tsx") language = "typescript";
-                if(language === "jsx") language = "javascript";
+                const language = fileParts.length > 1 ? fileParts[fileParts.length - 1] : "txt";
                 
                 const createfile = await db.file.create({
                     data: {

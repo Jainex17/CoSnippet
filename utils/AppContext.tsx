@@ -73,6 +73,9 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
       toast.error("Please enter unique filenames");
       return;
     }
+
+    const toastId = toast.loading("Creating snippet...");
+
     const username = user.username;
 
     const res = await fetch("/api/snippet/createsnippet",
@@ -85,9 +88,11 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if(res) {
-      toast.success("Snippet created successfully");
+      toast.update(toastId, { type: "success", render: "Snippet created successfully" });
       setFiles([{ id: Date.now(), filename: "", code: "" }]);
       setSnippet({ title: "" });
+    }else{
+      toast.update(toastId, { type: "error", render: "Failed to create snippet" });
     }
   }
 

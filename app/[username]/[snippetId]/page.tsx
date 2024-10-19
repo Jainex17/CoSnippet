@@ -4,12 +4,13 @@ import { Divider, Tooltip } from "@nextui-org/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
-import { SnippetType } from "../page";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
+// require(`prismjs/components/prism-cilkc`);
 import Prism from "prismjs";
 import Image from "next/image";
 import { useAppContext } from "@/utils/AppContext";
 import { toast } from "react-toastify";
+import { Snippet } from "@/utils/types";
 
 const Page = () => {
   
@@ -17,7 +18,7 @@ const Page = () => {
   const { user } = useAppContext();
 
   const [loading, setLoading] = React.useState(true);
-  const [snippets, setSnippets] = React.useState<SnippetType>();
+  const [snippets, setSnippets] = React.useState<Snippet>();
 
   const getSnippets = useCallback(async () => {
     try {
@@ -116,7 +117,7 @@ const Page = () => {
                 </Link>
               </h4>
               <h5 className="text-[0.6rem] md:text-xs tracking-tight text-default-400">
-                Created on {snippets?.createdAt}
+                Created on {snippets && new Date(snippets.createdAt).toLocaleDateString()}
               </h5>
             </div>
           </div>

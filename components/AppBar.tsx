@@ -51,7 +51,7 @@ export default function AppBar() {
     if (res) {
       const data = await res.json();
       setUser({
-        id: data.id,
+        uid: data.id,
         email: data.email,
         username: data.username,
         nickname: data.nickname,
@@ -140,7 +140,7 @@ export default function AppBar() {
                     <p className="font-semibold">Signed in as</p>
                     <p className="font-semibold">{session.user?.email}</p>
                   </DropdownItem>
-                  <DropdownItem onClick={()=> router.push(`${user.username}`)}>Profile</DropdownItem>
+                  <DropdownItem onClick={()=> router.push(`/${user.username}`)}>Profile</DropdownItem>
                   <DropdownItem color="danger" onClick={() => signOut()}>
                     Log Out
                   </DropdownItem>
