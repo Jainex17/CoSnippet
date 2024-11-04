@@ -15,6 +15,14 @@ export async function POST(req: Request) {
             return NextResponse.error();
         }
 
+        if(snippetFiles.length === 0) {
+            return NextResponse.error();
+        }
+
+        if(snippet.title === "") {
+            return NextResponse.error();
+        }
+
         const user = await db.user.findFirst({
             where: {
                 username,
@@ -66,7 +74,6 @@ export async function POST(req: Request) {
                 message: "Snippet created successfully",
             });
         }
-
     } catch(error) {
         console.error(error);
         return NextResponse.error();

@@ -4,10 +4,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const { uid, sid, islike } = await req.json();
-
-    console.log("uid", uid);
-    console.log("sid", sid);
-    console.log("islike", islike);
     
     if (!uid || !sid || typeof islike !== "boolean") {
       console.error("Missing required fields");

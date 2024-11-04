@@ -88,11 +88,11 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if(res) {
-      toast.update(toastId, { type: "success", render: "Snippet created successfully" });
+      toast.update(toastId, { render: "Snippet created successfully", type: "success", isLoading: false, autoClose: 2000});
       setFiles([{ id: Date.now(), filename: "", code: "" }]);
       setSnippet({ title: "" });
     }else{
-      toast.update(toastId, { type: "error", render: "Failed to create snippet" });
+      toast.update(toastId, { render: "Failed to create snippet", type: "error", isLoading: false, autoClose: 2000});
     }
   }
 
