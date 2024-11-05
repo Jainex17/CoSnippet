@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     try {
-        const { snippetId } = await req.json();
+        const { snippetId, username } = await req.json();
         
-        if(snippetId === undefined) {
+        if(snippetId === undefined || username === undefined) {
             return NextResponse.error();
         }
 
@@ -18,6 +18,7 @@ export async function POST(req: Request) {
                 title: true,
                 files: {
                     select: {
+                        fid: true,
                         filename: true,
                         language: true,
                         code: true
@@ -25,17 +26,23 @@ export async function POST(req: Request) {
                 },
                 user: {
                     select: {
+                        id: true,
                         username: true,
                         picture: true
                     }
                 },
                 likes: true,
                 createdAt: true,
+                totalFiles: true,
                 totalLikes: true
             }
         });
 
         if(!snippet) {
+            return NextResponse.error();
+        }
+
+        if(snippet.user.username !== username) {
             return NextResponse.error();
         }
 

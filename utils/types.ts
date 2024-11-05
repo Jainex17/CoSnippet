@@ -14,12 +14,17 @@ export interface Snippet {
   totalLikes: number;
   createdAt: Date;
   
-  user: User;
+  user: {
+    id: number;
+    username: string;
+    picture: string;
+  }
   files: File[];
   likes: SnippetLike[];
 }
 
 export interface File {
+  fid: number;
   filename: string;
   code: string;
   language: string;

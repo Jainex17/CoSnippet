@@ -5,6 +5,8 @@ const LanguageMap: { [key: string]: string } = {
     'md': 'markdown',
     'tsx': 'typescript',
     'jsx': 'javascript',
+    'ts': 'typescript',
+    'js': 'javascript',
 }
 
 const dependencies: { [key: string]: string } = {

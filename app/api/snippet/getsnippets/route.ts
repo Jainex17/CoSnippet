@@ -9,11 +9,15 @@ function getFirst10Lines(code: string): string {
 export async function GET(): Promise<NextResponse> {
     try {
         const snippets = await db.snippet.findMany({
+            orderBy: {
+                createdAt: "desc"
+            },
+            take: 10,
             select: {
                 sid: true,
                 title: true,
                 files: {
-                    take: 1,
+                    take: 1,    
                     select: {
                         filename: true,
                         language: true,
@@ -39,8 +43,6 @@ export async function GET(): Promise<NextResponse> {
                 code: getFirst10Lines(file.code) 
             }))
         }));
-
-        
 
         return NextResponse.json(processedSnippets);
     } catch (error) {
