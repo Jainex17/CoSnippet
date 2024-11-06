@@ -12,6 +12,9 @@ export async function GET(): Promise<NextResponse> {
             orderBy: {
                 createdAt: "desc"
             },
+            where: {
+                public: true
+            },
             take: 10,
             select: {
                 sid: true,

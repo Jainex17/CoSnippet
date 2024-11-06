@@ -3,14 +3,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     try {
-        const { snippetId } = await req.json();
+        const { snippetId, userId } = await req.json();
         
-        if(snippetId === undefined) {
+        if(snippetId === undefined || userId === undefined) {
             return NextResponse.error();
         }
         
         const snippet = await db.snippet.findFirst({
-            where: { sid: snippetId },
+            where: { sid: snippetId, uid: userId },
         });
       
         if(!snippet) {

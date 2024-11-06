@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         }
 
         const snippets = await db.snippet.findMany({
-            where: { user: { username } },
+            where: { user: { username }, public: true },
             select: {
                 sid: true,
                 title: true,

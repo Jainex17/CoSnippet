@@ -6,9 +6,7 @@ export async function POST(req: Request) {
         const { username } = await req.json();
 
         if (!username) {
-            return NextResponse.json({
-                message: 'Username not provided',
-            });
+            return NextResponse.error();
         }
 
         const curruser = await db.user.findUnique({
@@ -26,15 +24,10 @@ export async function POST(req: Request) {
         if (curruser) {
             return NextResponse.json(curruser);
         } else {
-            return NextResponse.json({
-                message: 'User not found',
-                status: 404,
-            });
+            return NextResponse.error();
         }
     } catch (error) {
         console.error('Error handling request:', error);
-        return NextResponse.json({
-            message: 'Internal server error',
-        });
+        return NextResponse.error();
     }
 }

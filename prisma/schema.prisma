@@ -27,6 +27,7 @@ model Snippet {
   title     String   @db.VarChar(255)
   totalFiles Int
   totalLikes Int @default(0)
+  public    Boolean  @default(false)
   createdAt DateTime @default(now())
   uid       Int
 

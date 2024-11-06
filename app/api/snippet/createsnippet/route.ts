@@ -38,6 +38,7 @@ export async function POST(req: Request) {
                 title: snippet.title,
                 totalFiles: snippetFiles.length,
                 totalLikes: 0,
+                public: snippet.public,
                 uid: user.id,
             },
         });

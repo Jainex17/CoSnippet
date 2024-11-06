@@ -1,6 +1,6 @@
 "use client";
 
-import { Divider, Tooltip } from "@nextui-org/react";
+import { Chip, Divider, Tooltip } from "@nextui-org/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
@@ -78,7 +78,7 @@ const Page = () => {
 
         const res = await fetch("/api/snippet/deletesnippet", {
           method: "POST",
-          body: JSON.stringify({ snippetId: snippets.sid }),
+          body: JSON.stringify({ snippetId: snippets.sid, userId: user.uid }),
         });
 
         if (res.status === 200) {
@@ -108,7 +108,7 @@ const Page = () => {
 
         const res = await fetch("/api/snippet/deletefile", {
           method: "POST",
-          body: JSON.stringify({ snippetId, fid }),
+          body: JSON.stringify({ snippetId: snippets.sid, fid }),
         });
 
         if (res.status === 200) {
@@ -118,7 +118,7 @@ const Page = () => {
             isLoading: false,
             autoClose: 2000,
           });
-          window.location.href = `/${user.username}`;
+          getSnippets();
         } else {
           toast.update(toastId, {
             render: "Failed to delete file",
@@ -130,7 +130,7 @@ const Page = () => {
       }
     }
   }
-
+  
   return (
     <>
       {loading ? (
@@ -163,6 +163,17 @@ const Page = () => {
                   >
                     {snippets?.title}
                   </Link>
+
+                  {
+                    snippets?.public == false && (
+                      <Chip
+                        color="danger"
+                        size="sm"
+                        className="text-[0.6rem] md:text-xs ml-2"
+                      >
+                        Private
+                  </Chip>
+                  )}
                 </h4>
                 <h5 className="text-[0.6rem] md:text-xs tracking-tight text-default-400">
                   Created on{" "}

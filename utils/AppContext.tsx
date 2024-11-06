@@ -6,6 +6,7 @@ import { User } from "./types";
 
 interface SnippetType {
     title: string;
+    public: boolean;
 }
 
 interface FilesTypes {
@@ -41,11 +42,15 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
     { id: Date.now() , filename: "", code: "" },
   ]);
 
-  const [snippet, setSnippet] = useState<SnippetType>(
-    { title: "" } 
-  );
+  const [snippet, setSnippet] = useState<SnippetType>({
+    title: "",
+    public: true,
+  });
 
   const handleCreateSnippet = async () => {
+
+    console.log(snippet);
+    
     if(snippet.title === "") {
       toast.error("Please enter a title for the snippet");
       return;
@@ -90,7 +95,7 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
     if(res) {
       toast.update(toastId, { render: "Snippet created successfully", type: "success", isLoading: false, autoClose: 2000});
       setFiles([{ id: Date.now(), filename: "", code: "" }]);
-      setSnippet({ title: "" });
+      setSnippet({ title: "", public: true });
     }else{
       toast.update(toastId, { render: "Failed to create snippet", type: "error", isLoading: false, autoClose: 2000});
     }

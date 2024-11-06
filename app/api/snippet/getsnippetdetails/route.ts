@@ -34,7 +34,8 @@ export async function POST(req: Request) {
                 likes: true,
                 createdAt: true,
                 totalFiles: true,
-                totalLikes: true
+                totalLikes: true,
+                public: true
             }
         });
 

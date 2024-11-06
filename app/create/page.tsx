@@ -1,23 +1,32 @@
 "use client";
 
 import { Button, Divider } from "@nextui-org/react";
+import {
+  ButtonGroup,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@nextui-org/react";
 import { IDE } from "@/components/IDE";
 import { useAppContext } from "@/utils/AppContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { redirect } from "next/navigation";
 
 const CreateSnippet = () => {
-  
-  const { snippet, user, setSnippet, files, setFiles, handleCreateSnippet } = useAppContext();
+  const { snippet, user, setSnippet, files, setFiles, handleCreateSnippet } =
+    useAppContext();
 
   const handleAddFile = () => {
     setFiles([...files, { id: Date.now(), filename: "", code: "" }]);
-  }
+  };
 
+  const [selectedOption, setSelectedOption] = useState<string>("Create Public Snippet");
 
+  
   useEffect(() => {
-    if(user.username === "") {
+    if (user.username === "") {
       toast.error("Please Login");
       redirect("/");
     }
@@ -62,7 +71,6 @@ const CreateSnippet = () => {
           <IDE key={index} index={file.id} />
         ))}
 
-
         <div className="flex justify-between my-5 ">
           <Button
             className="bg-[#201421] py-2 px-5 rounded-md hover:bg-slate-800"
@@ -71,9 +79,48 @@ const CreateSnippet = () => {
             Add file
           </Button>
 
-          <Button color="primary" className="rounded-md" onClick={handleCreateSnippet}>
-            Create Snippet
-          </Button>
+          <ButtonGroup variant="flat">
+            <Button className="bg-[#201421]" onClick={handleCreateSnippet}>{selectedOption}</Button>
+            <Dropdown placement="bottom-end" className="bg-[#201421]">
+              <DropdownTrigger>
+                <Button isIconOnly className="bg-[#201421]">
+                  <svg
+                    fill="none"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    width="14"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M17.9188 8.17969H11.6888H6.07877C5.11877 8.17969 4.63877 9.33969 5.31877 10.0197L10.4988 15.1997C11.3288 16.0297 12.6788 16.0297 13.5088 15.1997L15.4788 13.2297L18.6888 10.0197C19.3588 9.33969 18.8788 8.17969 17.9188 8.17969Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Select an option"
+                selectionMode="single"
+                className="max-w-[300px]"
+                onAction={(key) => {setSelectedOption(key.toString()); setSnippet({ ...snippet, public: key.toString() === "Create Public Snippet" ? true : false })}}
+                selectedKeys={new Set([selectedOption])}
+              >
+                <DropdownItem
+                  key="Create Public Snippet"
+                  description={"Everyone can see this snippet"}
+                >
+                  Create Public Snippet
+                </DropdownItem>
+                <DropdownItem
+                  key="Create Private Snippet"
+                  description={"Only you can see this snippet"}
+                >
+                  Create Private Snippet
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </ButtonGroup>
         </div>
       </div>
     </>

@@ -12,6 +12,7 @@ export interface Snippet {
   title: string;
   totalFiles: number;
   totalLikes: number;
+  public: boolean;
   createdAt: Date;
   
   user: {
