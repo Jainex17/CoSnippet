@@ -1,6 +1,6 @@
 "use client";
 
-import { Divider, snippet } from "@nextui-org/react";
+import { Divider } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import Prism from "prismjs";
 import { loadPrismLanguage } from "@/utils/LoadPrismLanguage";
