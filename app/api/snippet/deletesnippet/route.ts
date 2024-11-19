@@ -6,7 +6,7 @@ export async function POST(req: Request) {
         const { snippetId, userId } = await req.json();
         
         if(snippetId === undefined || userId === undefined) {
-            return NextResponse.error();
+            return NextResponse.json({ success: false }, { status: 400 });
         }
         
         const snippet = await db.snippet.findFirst({
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         });
       
         if(!snippet) {
-            return NextResponse.error();
+            return NextResponse.json({ success: false }, { status: 404 });
         }
 
         // Delete the snippet

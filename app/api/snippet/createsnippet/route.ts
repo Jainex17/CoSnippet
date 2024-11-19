@@ -10,73 +10,64 @@ interface FilesTypes {
 export async function POST(req: Request) {
     try {
         const { username, snippet, snippetFiles } = await req.json();
-        
-        if(username === undefined || snippet === undefined || snippetFiles === undefined) {
-            return NextResponse.error();
-        }
 
-        if(snippetFiles.length === 0) {
-            return NextResponse.error();
-        }
-
-        if(snippet.title === "") {
-            return NextResponse.error();
+        if (!username || !snippet || !snippetFiles || snippetFiles.length === 0 || !snippet.title) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
         const user = await db.user.findFirst({
-            where: {
-                username,
-            },
+            where: { username },
         });
 
-        if(!user) {
-            return NextResponse.error();
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        const createSnippet = await db.snippet.create({
-            data: {
-                title: snippet.title,
-                totalFiles: snippetFiles.length,
-                totalLikes: 0,
-                public: snippet.public,
-                uid: user.id,
-            },
-        });
-
-        if(createSnippet) {
-            for (let i = 0; i < snippetFiles.length; i++) {
-                const currFile: FilesTypes = snippetFiles[i];
-                const fileParts = currFile.filename.split('.');
-
-                const language = fileParts.length > 1 ? fileParts[fileParts.length - 1] : "txt";
-                
-                const createfile = await db.file.create({
+        try {
+            // Use a transaction to ensure both snippet and files are created or nothing is created
+            await db.$transaction(async (prisma) => {
+                // Create the snippet first
+                const createSnippet = await prisma.snippet.create({
                     data: {
-                        filename: currFile.filename,
-                        code: currFile.code,
-                        sid: createSnippet.sid,
-                        language,
+                        title: snippet.title,
+                        totalFiles: snippetFiles.length,
+                        totalLikes: 0,
+                        public: snippet.public,
+                        uid: user.id,
                     },
                 });
-                
-                if(!createfile) {
 
-                    await db.snippet.delete({
-                        where: {
+                // Create all files
+                const filePromises = snippetFiles.map((file: FilesTypes) => {
+                    const fileParts = file.filename.split('.');
+                    const language = fileParts.length > 1 ? fileParts[fileParts.length - 1] : "txt";
+
+                    return prisma.file.create({
+                        data: {
+                            filename: file.filename,
+                            code: file.code,
+                            language,
                             sid: createSnippet.sid,
                         },
                     });
+                });
 
-                    return NextResponse.error();
-                }
-            }
+                await Promise.all(filePromises);
 
-            return NextResponse.json({
-                message: "Snippet created successfully",
+                return createSnippet;
             });
+
+            return NextResponse.json({ success: true });
+
+        } catch (transactionError) {
+            console.error("Transaction failed:", transactionError);
+            return NextResponse.json({ 
+                error: "Failed to create snippet and files" 
+            }, { status: 500 });
         }
-    } catch(error) {
-        console.error(error);
-        return NextResponse.error();
+
+    } catch (error) {
+        console.error("Request error:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

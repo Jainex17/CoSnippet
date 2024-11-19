@@ -6,8 +6,7 @@ export async function POST(req: Request) {
     const { uid, sid, islike } = await req.json();
     
     if (!uid || !sid || typeof islike !== "boolean") {
-      console.error("Missing required fields");
-      return NextResponse.error();
+      return NextResponse.json({ success: false }, { status: 400 });
     }
 
     const alreadyReacted = await db.snippetLike.findFirst({
@@ -90,7 +89,7 @@ export async function POST(req: Request) {
           });
           
           if(!createRection) {
-            return NextResponse.error();
+            return NextResponse.json({ success: false }, { status: 500 });
           }
 
           await db.snippet.update({

@@ -6,7 +6,7 @@ export async function POST(req: Request) {
         const { username } = await req.json();
 
         if (!username) {
-            return NextResponse.error();
+            return NextResponse.json({ success: false }, { status: 400 });
         }
 
         const curruser = await db.user.findUnique({
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         if (curruser) {
             return NextResponse.json(curruser);
         } else {
-            return NextResponse.error();
+            return NextResponse.json({ success: false }, { status: 404 });
         }
     } catch (error) {
         console.error('Error handling request:', error);

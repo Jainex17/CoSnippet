@@ -6,7 +6,7 @@ export async function POST(req: Request) {
         const { snippetId, fid } = await req.json();
         
         if(snippetId === undefined || fid === undefined) {
-            return NextResponse.error();
+            return NextResponse.json({ error: "Invalid request" }, { status: 400 });
         }
         
         const snippet = await db.snippet.findFirst({
@@ -14,11 +14,11 @@ export async function POST(req: Request) {
         });
         
         if(!snippet) {
-            return NextResponse.error();
+            return NextResponse.json({ error: "Snippet not found" }, { status: 404 });
         }
         
         if(snippet?.totalFiles <= 1) {
-            return NextResponse.error();   
+            return NextResponse.json({ error: "Snippet must have at least one file" }, { status: 400 });
         }
         
         // Delete the snippet

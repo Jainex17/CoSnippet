@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import { Card } from "./Card";
 import { LoadingSnippet } from "./LoadingSnippet";
 import { Snippet } from "@/utils/types";
-export const Cards = () => {
 
+export const Cards = () => {
   const [snippets, setSnippets] = useState<Snippet[]>();
 
   async function getSnippets() {
-    const res = await fetch("/api/snippet/getsnippets");
+    const res = await fetch("/api/snippet/getsnippets", {
+      cache: 'no-store'  // Ensures fresh data on each request
+    });
     const data = await res.json();
-    setSnippets(data);  
+    setSnippets(data);
   }
 
   useEffect(() => {
