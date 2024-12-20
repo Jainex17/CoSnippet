@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 export const metadata: Metadata = {
   title: "CoSnippet",
   description: "CoSnippet is a platform where you can discover and share code snippets.",
+  keywords: ["CoSnippet", "Code Snippets", "Code Sharing"],
+  icons: "/assets/logo.png",
 };
 
 export default function RootLayout({
