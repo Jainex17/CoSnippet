@@ -26,6 +26,10 @@ const Page = () => {
     const username = params.username;
     const res = await fetch("/api/user/mysnippets", {
       method: "POST",
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache'
+      },
       body: JSON.stringify({ username }),
     });
     const data = await res.json();
@@ -36,6 +40,10 @@ const Page = () => {
     const username = params.username;
     const res = await fetch(`/api/user/getuser`, {
       method: "POST",
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache'
+      },
       body: JSON.stringify({ username }),
     });
 

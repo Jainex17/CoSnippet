@@ -28,6 +28,10 @@ const Page = () => {
 
       const res = await fetch("/api/snippet/getsnippetdetails", {
         method: "POST",
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        },
         body: JSON.stringify({ snippetId: intsnippetId, username }),
       });
       if (res.status === 200) {

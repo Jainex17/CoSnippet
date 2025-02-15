@@ -47,7 +47,11 @@ export async function GET(): Promise<NextResponse> {
             }))
         }));
 
-        return NextResponse.json(processedSnippets);
+        return NextResponse.json(processedSnippets, {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate'
+            }
+        });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch snippets" }, { status: 500 });
     }

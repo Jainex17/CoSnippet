@@ -10,7 +10,10 @@ export const Cards = () => {
 
   async function getSnippets() {
     const res = await fetch("/api/snippet/getsnippets", {
-      cache: 'no-store'  // Ensures fresh data on each request
+      cache: 'no-store',  // Disable caching
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
     });
     const data = await res.json();
     setSnippets(data);
