@@ -24,7 +24,7 @@ export const Card = ({ snippets }: { snippets: Snippet }) => {
   }, [snippets.files]);
 
   useEffect(() => {
-    snippets.likes.forEach((like) => {
+    snippets.likes?.forEach((like) => {
       if (like.uid === user.uid) {
         if (like.reaction === "LIKE") {
           setIsLiked(true);

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 function getFirst10Lines(code: string): string {
     const lines = code.split('\n');
-    return lines.slice(0, 20).join('\n');
+    return lines.slice(0, 10).join('\n'); // reduced from 20 to 10 lines
 }
 
 export async function GET(): Promise<NextResponse> {
@@ -11,9 +11,6 @@ export async function GET(): Promise<NextResponse> {
         const snippets = await db.snippet.findMany({
             orderBy: {
                 createdAt: "desc"
-            },
-            where: {
-                public: true
             },
             take: 10,
             select: {
@@ -33,23 +30,25 @@ export async function GET(): Promise<NextResponse> {
                         picture: true
                     }
                 },
-                likes: true,
-                createdAt: true,
-                totalLikes: true
+                totalLikes: true,
+                createdAt: true
             }
         });
         
+        if (!snippets.length) {
+            return NextResponse.json({ message: "No snippets found" });
+        }
+
         const processedSnippets = snippets.map(snippet => ({
             ...snippet,
             files: snippet.files.map(file => ({
                 ...file,
-                code: getFirst10Lines(file.code) 
+                code: getFirst10Lines(file.code)
             }))
         }));
 
         return NextResponse.json(processedSnippets);
     } catch (error) {
-        console.error("Error fetching snippets:", error);
         return NextResponse.json({ error: "Failed to fetch snippets" }, { status: 500 });
     }
 }
