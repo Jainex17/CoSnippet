@@ -1,6 +1,7 @@
 import { SessionProvider } from "next-auth/react";
 import { NextUIProvider } from "@nextui-org/react";
 import { ContextProvider } from "@/utils/AppContext";
+import { Analytics } from "@vercel/analytics/react"
 
 export const Provider = ({
     children,
@@ -15,5 +16,6 @@ export const Provider = ({
         </ContextProvider>
       </SessionProvider>
     </NextUIProvider>
+    <Analytics />
   </>;
 };
