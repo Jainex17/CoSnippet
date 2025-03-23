@@ -9,8 +9,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false }, { status: 400 });
         }
 
-        const curruser = await db.user.findUnique({
+        const curruser = await db.user.findFirst({
             where: { username },
+            orderBy: {
+                createdAt: 'desc'
+            },
             select: {
                 id: true,
                 username: true,
