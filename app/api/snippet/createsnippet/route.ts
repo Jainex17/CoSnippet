@@ -7,6 +7,10 @@ interface FilesTypes {
     code: string;
 }
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
+
 export async function POST(req: Request) {
     try {
         const { username, snippet, snippetFiles } = await req.json();
@@ -57,7 +61,14 @@ export async function POST(req: Request) {
                 return createSnippet;
             });
 
-            return NextResponse.json({ success: true });
+            return NextResponse.json({ success: true }, {
+                headers: {
+                    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                    'Surrogate-Control': 'no-store'
+                }
+            });
 
         } catch (transactionError) {
             console.error("Transaction failed:", transactionError);

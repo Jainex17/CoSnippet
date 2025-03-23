@@ -6,6 +6,10 @@ function getFirst10Lines(code: string): string {
     return lines.slice(0, 10).join('\n'); // reduced from 20 to 10 lines
 }
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
+
 export async function GET(): Promise<NextResponse> {
     try {
         const snippets = await db.snippet.findMany({
@@ -49,7 +53,10 @@ export async function GET(): Promise<NextResponse> {
 
         return NextResponse.json(processedSnippets, {
             headers: {
-                'Cache-Control': 'no-store, no-cache, must-revalidate'
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+                'Surrogate-Control': 'no-store'
             }
         });
     } catch (error) {
