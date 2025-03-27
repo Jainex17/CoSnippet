@@ -48,18 +48,10 @@ export async function POST(req: Request) {
         }));
 
         return NextResponse.json(processedSnippets);
-    } catch (error: any) {
-        console.error("Error fetching snippets:", error);
+    } catch (err) {
         
-        // Handle database connection errors specifically
-        if (error.code === 'P1001') {
-            return NextResponse.json(
-                { error: "Database connection failed. Please try again later." },
-                { status: 503 }
-            );
-        }
-        
-        // Handle other errors
+        console.error("Error fetching snippets:", err);
+
         return NextResponse.json(
             { error: "Failed to fetch snippets" },
             { status: 500 }
