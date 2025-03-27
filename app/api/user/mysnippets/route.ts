@@ -11,7 +11,7 @@ export async function POST(req: Request) {
         const { username } = await req.json();
 
         if (!username) {
-            return NextResponse.error();
+            return NextResponse.json({ error: "Username is required" }, { status: 400 });
         }
 
         const snippets = await db.snippet.findMany({
@@ -47,11 +47,22 @@ export async function POST(req: Request) {
             }))
         }));
 
-        
-
         return NextResponse.json(processedSnippets);
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching snippets:", error);
-        return NextResponse.json({ error: "Failed to fetch snippets" }, { status: 500 });
+        
+        // Handle database connection errors specifically
+        if (error.code === 'P1001') {
+            return NextResponse.json(
+                { error: "Database connection failed. Please try again later." },
+                { status: 503 }
+            );
+        }
+        
+        // Handle other errors
+        return NextResponse.json(
+            { error: "Failed to fetch snippets" },
+            { status: 500 }
+        );
     }
 }

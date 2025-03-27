@@ -13,6 +13,9 @@ export const revalidate = 0;
 export async function GET(): Promise<NextResponse> {
     try {
         const snippets = await db.snippet.findMany({
+            where: {
+                public: true
+            },
             orderBy: {
                 createdAt: "desc"
             },
@@ -20,7 +23,6 @@ export async function GET(): Promise<NextResponse> {
             select: {
                 sid: true,
                 title: true,
-                public: true,
                 files: {
                     take: 1,    
                     select: {
