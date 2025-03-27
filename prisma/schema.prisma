@@ -42,7 +42,7 @@ model Snippet {
 
 model File {
   fid       Int      @id @default(autoincrement())
-  filename  String   @db.VarChar(255) @unique
+  filename  String   @db.VarChar(255)
   code      String   @db.Text
   language  String   @db.VarChar(255)
   sid       Int

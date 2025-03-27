@@ -28,9 +28,7 @@ export async function POST(req: Request) {
         }
 
         try {
-            // Use a transaction to ensure both snippet and files are created or nothing is created
             await db.$transaction(async (prisma) => {
-                // Create the snippet first
                 const createSnippet = await prisma.snippet.create({
                     data: {
                         title: snippet.title,
@@ -41,11 +39,10 @@ export async function POST(req: Request) {
                     },
                 });
 
-                // Create all files
                 const filePromises = snippetFiles.map((file: FilesTypes) => {
                     const fileParts = file.filename.split('.');
                     const language = fileParts.length > 1 ? fileParts[fileParts.length - 1] : "txt";
-
+                    
                     return prisma.file.create({
                         data: {
                             filename: file.filename,

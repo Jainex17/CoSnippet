@@ -48,9 +48,7 @@ export const ContextProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const handleCreateSnippet = async () => {
-
-    console.log(snippet);
-    
+ 
     if(snippet.title === "") {
       toast.error("Please enter a title for the snippet");
       return;

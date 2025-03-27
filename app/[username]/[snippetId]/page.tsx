@@ -35,7 +35,6 @@ const Page = () => {
         body: JSON.stringify({ snippetId: intsnippetId, username }),
       });
       if (res.status === 200) {
-        console.log(res);
         const data = await res.json();
         
         setSnippets(data);
