@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 function getFirst10Lines(code: string): string {
     const lines = code.split('\n');
-    return lines.slice(0, 10).join('\n'); // reduced from 20 to 10 lines
+    return lines.slice(0, 10).join('\n');
 }
 
 export const dynamic = 'force-dynamic';
@@ -20,6 +20,7 @@ export async function GET(): Promise<NextResponse> {
             select: {
                 sid: true,
                 title: true,
+                public: true,
                 files: {
                     take: 1,    
                     select: {
